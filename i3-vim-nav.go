@@ -14,8 +14,8 @@ import (
 func main() {
 	dir := string(os.Args[1])
 
-	if match, _ := regexp.MatchString(`h|j|k|l`, dir); !match {
-		fmt.Println("must have an argument h j k or l")
+	if match, _ := regexp.MatchString(`left|down|up|right`, dir); !match {
+		fmt.Println("must have an argument left, down, up, or right")
 		return
 	}
 
@@ -23,10 +23,10 @@ func main() {
 	window := xdot.GetActiveWindow()
 	name := strings.ToLower(window.GetName())
 
-	r, _ := regexp.Compile(`\bn?v(im)?$`)
+	r, _ := regexp.Compile(`\bn?vim?$`)
 
 	if r.MatchString(name) {
-		keycmd := exec.Command("xdotool", "key", "--clearmodifiers", "Escape+alt+"+dir)
+		keycmd := exec.Command("xdotool", "key", "--clearmodifiers", "Ctrl+"+strings.Title(dir))
 		out, _ := keycmd.Output()
 		if len(out) > 0 {
 			fmt.Println(out)
@@ -37,12 +37,6 @@ func main() {
 			fmt.Println("could not connect to i3")
 			return
 		}
-		m := make(map[string]string)
-		m["h"] = "left"
-		m["j"] = "down"
-		m["k"] = "up"
-		m["l"] = "right"
-		conn.Command("focus " + m[dir])
+		conn.Command("focus " + dir)
 	}
-
 }
